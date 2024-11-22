@@ -18,7 +18,7 @@ Refer the below pages for release specific information,
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM64X/08_01_00_36/exports/docs/api_guide_am64x/RELEASE_NOTES_08_01_00_PAGE.html , **Release Notes 08.01.00**}
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM64X/08_00_00_21/exports/docs/api_guide_am64x/RELEASE_NOTES_08_00_00_PAGE.html , **Release Notes 08.00.00**}
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM64X/08_00_00_21/exports/docs/api_guide_am64x/RELEASE_NOTES_07_03_02_PAGE.html , **Release Notes 07.03.02**}
-- \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM64X/08_00_00_21/exports/docs/api_guide_am64x/RELEASE_NOTES_07_03_01_PAGE.html , **Release Notes 07.03.01**}
+- \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM64X/08_00_00_21/exports/docs/api_guide_am64x/RELEASE_NOTES_07_03_01_PAGE.html , **Release Notes 10.0.0.20**}
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM64X/07_03_00_19/exports/docs/api_guide_am64x/RELEASE_NOTES_07_03_00_PAGE.html , **Release Notes 07.03.00**}
 \endcond
 
@@ -35,6 +35,6 @@ Refer the below pages for release specific information,
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM243X/08_01_00_36/exports/docs/api_guide_am243x/RELEASE_NOTES_08_01_00_PAGE.html , **Release Notes 08.01.00**}
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM243X/08_00_00_21/exports/docs/api_guide_am243x/RELEASE_NOTES_08_00_00_PAGE.html , **Release Notes 08.00.00**}
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM243X/08_00_00_21/exports/docs/api_guide_am243x/RELEASE_NOTES_07_03_02_PAGE.html , **Release Notes 07.03.02**}
-- \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM243X/08_00_00_21/exports/docs/api_guide_am243x/RELEASE_NOTES_07_03_01_PAGE.html , **Release Notes 07.03.01**}
+- \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM243X/08_00_00_21/exports/docs/api_guide_am243x/RELEASE_NOTES_07_03_01_PAGE.html , **Release Notes 10.0.0.20**}
 - \htmllink{https://software-dl.ti.com/mcu-plus-sdk/esd/AM243X/07_03_00_19/exports/docs/api_guide_am243x/RELEASE_NOTES_07_03_00_PAGE.html , **Release Notes 07.03.00**}
 \endcond

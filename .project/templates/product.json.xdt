@@ -15,7 +15,7 @@
     "name": "MCU_PLUS_SDK_`deviceName`",
     "displayName": "MCU+ SDK for `deviceName`",
 % }
-    "version": "07.03.01",
+    "version": "10.0.0.200",
     "documentationPath": "../docs",
     "includePaths": [
         "../source/sysconfig",

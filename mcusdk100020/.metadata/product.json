@@ -1,0 +1,88 @@
+{
+    "name": "MCU_PLUS_SDK_AM64x",
+    "displayName": "MCU+ SDK for AM64x",
+    "version": "10.00.00",
+    "documentationPath": "../docs",
+    "includePaths": [
+        "../source/sysconfig",
+    ],
+    "components": [
+        "/kernel/dpl",
+        "/drivers/drivers",
+        "/board/board",
+        "/fs/fs",
+        "/networking/networking",
+        "/security/security",
+        "/usb/usb",
+        "/pru_io/pru_io",
+        "/memory_configurator/components"
+    ],
+    "devices": [
+        "AM64x",
+    ],
+    "contexts": {
+        "AM64x": [{
+            "name": "r5fss0-0",
+            "targetdbId": "r5fss0-0"
+        }, {
+            "name": "r5fss0-1",
+            "targetdbId": "r5fss0-1"
+        },{
+            "name": "r5fss1-0",
+            "targetdbId": "r5fss1-0"
+        }, {
+            "name": "r5fss1-1",
+            "targetdbId": "r5fss1-1"
+        }, {
+            "name": "m4fss0-0",
+            "targetdbId": "m4fss0-0"
+        }, {
+            "name": "a53ss0-0",
+            "targetdbId": "a53ss0-0"
+        },{
+            "name": "icss_g0_pru0",
+            "targetdbId": "icss_g0_pru0"
+        },{
+            "name": "icss_g0_pru1",
+            "targetdbId": "icss_g0_pru1"
+        },{
+            "name": "icss_g1_pru0",
+            "targetdbId": "icss_g1_pru0"
+        },{
+            "name": "icss_g1_pru1",
+            "targetdbId": "icss_g1_pru1"
+        },{
+            "name": "icss_g0_rtu_pru0",
+            "targetdbId": "icss_g0_rtu_pru0"
+        },{
+            "name": "icss_g0_rtu_pru1",
+            "targetdbId": "icss_g0_rtu_pru1"
+        },{
+            "name": "icss_g1_rtu_pru0",
+            "targetdbId": "icss_g1_rtu_pru0"
+        },{
+            "name": "icss_g1_rtu_pru1",
+            "targetdbId": "icss_g1_rtu_pru1"
+        },{
+            "name": "icss_g0_tx_pru0",
+            "targetdbId": "icss_g0_tx_pru0"
+        },{
+            "name": "icss_g0_tx_pru1",
+            "targetdbId": "icss_g0_tx_pru1"
+        },{
+            "name": "icss_g1_tx_pru0",
+            "targetdbId": "icss_g1_tx_pru0"
+        },{
+            "name": "icss_g1_tx_pru1",
+            "targetdbId": "icss_g1_tx_pru1"
+        }],
+    },
+    "pinmuxUIOptions": {
+        "group": "merged",
+        "hidePeripheralTab": false,
+        "showPinTable": true,
+        "showSignals": true,
+        "showUsed": true
+    },
+    "minToolVersion" : "1.20.0"
+}
