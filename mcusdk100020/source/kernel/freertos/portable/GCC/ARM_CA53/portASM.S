@@ -72,7 +72,7 @@
     .global HwiP_SVC_Handler
 	.global vPortRestoreTaskContext
     .global HwiP_defaultExcHandler
-	.global HwiP_abortHandler
+	.global HwiP_abortHandler_custom
 	.global HwiP_alignmentFaultHandler
 
 .macro PUSH_ALL_CPU_REGS stackPtr
@@ -240,8 +240,9 @@
 	LDR		X0, ullCriticalNestingConst /* X0 holds the address of ullCriticalNesting. */
 	MOV		X1, #255					/* X1 holds the unmask value. */
 	CMP		X3, #0
-	B.EQ	1f
-1:
+	B.EQ	2f
+	MOV		X1, #0						/* Mask interrupts if critical nesting != 0 */
+2:
 	MSR		s3_0_c4_c6_0, X1			/* Write the mask value to ICCPMR. s3_0_c4_c6_0 is ICC_PMR_EL1. */
 	DSB 	SY							/* _RB_Barriers probably not required here. */
 	ISB 	SY
@@ -253,9 +254,9 @@
 
 	/* Restore the FPU context, if any. */
 	CMP		X2, #0
-	B.EQ	1f
+	B.EQ	3f
     POP_CALLER_SAVE_FPU_REGS SP
-1:
+3:
 	LDP 	X2, X3, [SP], #0x10  /* SPSR and ELR. */
 
 	/* Restore the SPSR. */
@@ -289,14 +290,14 @@ HwiP_gicv3Vectors:
  */
 VECTOR_ENTRY el1SyncSP0
     mrs     x0, esr_el1
-    and     x0, x0, #0xfc000000    /* Get exception class */
-    cmp     x0, #0x88000000        /* Check for alignment fault */
+    lsr     x0, x0, #26         /* Get exception class (EC) */
+    cmp     x0, #0x21           /* Check for alignment fault */
     b.eq    HwiP_alignmentFaultHandler
-    cmp     x0, #0x84000000        /* Check for data abort */
-    b.eq    HwiP_abortHandler
-    cmp     x0, #0x82000000        /* Check for instruction abort */
-    b.eq    HwiP_abortHandler
-    b       HwiP_SVC_Handler       /* Default to SVC handler */
+    cmp     x0, #0x24           /* Check for data abort */
+    b.eq    HwiP_abortHandler_custom
+    cmp     x0, #0x20           /* Check for instruction abort */
+    b.eq    HwiP_abortHandler_custom
+    b       HwiP_SVC_Handler    /* Default to SVC handler */
 
 VECTOR_ENTRY el1IrqSP0
     B HwiP_IRQ_Handler
@@ -324,14 +325,14 @@ VECTOR_ENTRY el1SErrorSP0
  */
 VECTOR_ENTRY el1SyncSPx
     mrs     x0, esr_el1
-    and     x0, x0, #0xfc000000    /* Get exception class */
-    cmp     x0, #0x88000000        /* Check for alignment fault */
+    lsr     x0, x0, #26         /* Get exception class (EC) */
+    cmp     x0, #0x21           /* Check for alignment fault */
     b.eq    HwiP_alignmentFaultHandler
-    cmp     x0, #0x84000000        /* Check for data abort */
-    b.eq    HwiP_abortHandler
-    cmp     x0, #0x82000000        /* Check for instruction abort */
-    b.eq    HwiP_abortHandler
-    b       HwiP_SVC_Handler       /* Default to SVC handler */
+    cmp     x0, #0x24           /* Check for data abort */
+    b.eq    HwiP_abortHandler_custom
+    cmp     x0, #0x20           /* Check for instruction abort */
+    b.eq    HwiP_abortHandler_custom
+    b       HwiP_SVC_Handler    /* Default to SVC handler */
 
 VECTOR_ENTRY el1IrqSPx
     B HwiP_IRQ_Handler
@@ -412,9 +413,29 @@ HwiP_SVC_Handler:
 	B.NE	HwiP_SVC_Abort
 	BL 		vTaskSwitchContext
 	portRESTORE_CONTEXT
+
 HwiP_SVC_Abort:
-	/* Full ESR is in X0, exception class code is in X1. */
-	B		.
+    /* Save all CPU registers */
+    PUSH_ALL_CPU_REGS sp
+    
+    /* Get fault information */
+    mrs     x19, esr_el1           /* Exception Syndrome Register */
+    mrs     x20, far_el1           /* Fault Address Register */
+    mrs     x21, elr_el1           /* Exception Link Register */
+    mrs     x22, spsr_el1          /* Saved Program Status Register */
+    
+    /* Set up parameters for HwiP_handleAbort */
+    mov     x0, x19                /* ESR */
+    mov     x1, x20                /* FAR */
+    mov     x2, x21                /* ELR */
+    mov     x3, #3                 /* Critical exception type */
+    
+    /* Call C handler */
+    bl      HwiP_handleAbort
+    
+    /* If we return (which we shouldn't), enter infinite loop */
+1:  wfi
+    b       1b
 
 /******************************************************************************
  * handles IRQ entry and exit.
@@ -529,11 +550,11 @@ HwiP_defaultExcHandler:
         eret
 
 /*
- * Data Abort and Instruction Abort Handler
+ * Handler for data and instruction aborts
  */
 .align 8
-.type HwiP_abortHandler, %function
-HwiP_abortHandler:
+.type HwiP_abortHandler_custom, %function
+HwiP_abortHandler_custom:
     /* Save all CPU registers */
     PUSH_ALL_CPU_REGS sp
     
@@ -578,22 +599,41 @@ HwiP_abortHandler:
     eret
 
 /*
- * Memory Alignment Fault Handler
+ * Alignment Fault Handler
  */
 .align 8
 .type HwiP_alignmentFaultHandler, %function
 HwiP_alignmentFaultHandler:
-    PUSH_ALL_CPU_REGS sp
-    
-    mrs     x19, esr_el1           /* Get syndrome info */
-    mrs     x20, far_el1           /* Get fault address */
-    
-    mov     x0, x19                /* Pass ESR */
-    mov     x1, x20                /* Pass FAR */
-    bl      HwiP_handleAlignmentFault
-    
-    POP_ALL_CPU_REGS sp
-    eret
+        /* Save all CPU registers */
+        PUSH_ALL_CPU_REGS sp
+
+        /* Get and save exception registers */
+        mrs     x19, sp_el0
+        mrs     x20, elr_el1
+        mrs     x21, spsr_el1
+        mrs     x22, esr_el1
+        mrs     x23, far_el1
+
+        /* Save exception registers to stack */
+        stp     x19, x20, [sp, #-16]!  /* sp_el0 and elr */
+        stp     x21, x22, [sp, #-16]!  /* spsr and esr */
+        str     x23, [sp, #-8]!        /* far */
+
+        /* Set up ExceptionContext structure for vPrintExceptionDetails */
+        mov     x0, sp                  /* Pass stack pointer as context */
+        bl      vPrintExceptionDetails
+
+        /* Restore exception registers */
+        ldr     x23, [sp], #8
+        ldp     x21, x22, [sp], #16
+        ldp     x19, x20, [sp], #16
+
+        /* Restore all CPU registers */
+        POP_ALL_CPU_REGS sp
+
+        /* Enter infinite loop */
+1:      wfi
+        b       1b
 
 .align 8
 pxCurrentTCBConst: .dword pxCurrentTCB

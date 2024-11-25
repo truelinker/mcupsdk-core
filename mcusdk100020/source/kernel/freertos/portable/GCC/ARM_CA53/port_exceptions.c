@@ -91,6 +91,79 @@ static inline uint64_t get_far_el1(void) {
     return far;
 }
 
+/* Handler for data and instruction aborts */
+void HwiP_handleAbort(uint64_t esr, uint64_t far, uint64_t elr, uint32_t type) {
+    uint32_t ec = (esr >> 26) & 0x3F;    /* Extract Exception Class */
+    uint32_t iss = esr & 0x1FFFFFF;       /* Extract Instruction Specific Syndrome */
+    
+    /* Initialize crash dump structure */
+    volatile CrashDump_t *crash_dump = (volatile CrashDump_t *)SHARED_MEM_BASE;
+    if (crash_dump != NULL) {
+        crash_dump->signature = CRASH_SIGNATURE;
+        crash_dump->timestamp = xTaskGetTickCount();
+        crash_dump->esr = esr;
+        crash_dump->far = far;
+        crash_dump->elr = elr;
+        
+        /* Get current execution state */
+        uint64_t spsr;
+        __asm__ volatile("mrs %0, spsr_el1" : "=r" (spsr));
+        crash_dump->spsr = spsr;
+        
+        /* Get current stack pointer */
+        uint64_t sp;
+        __asm__ volatile("mov %0, sp" : "=r" (sp));
+        crash_dump->sp = sp;
+        
+        /* Note: General purpose registers would need to be saved in assembly code */
+        /* Here we just mark them as 0 for now */
+        for (int i = 0; i < 31; i++) {
+            crash_dump->regs[i] = 0;
+        }
+    }
+#if 0
+    /* Check if it's a stack overflow */
+    TaskHandle_t currentTask = xTaskGetCurrentTaskHandle();
+    if (currentTask != NULL) {
+        /* Get stack information using configurable hooks */
+        #if (configCHECK_FOR_STACK_OVERFLOW > 0)
+        const uint8_t *pucStackLimit = (uint8_t *)pvTaskGetStackStart(currentTask);
+        if (pucStackLimit != NULL && 
+            (uint64_t)far >= (uint64_t)pucStackLimit && 
+            (uint64_t)far < (uint64_t)(pucStackLimit + configMINIMAL_STACK_SIZE)) {
+            /* Call the stack overflow hook */
+            vApplicationStackOverflowHook(currentTask, pcTaskGetName(currentTask));
+            return;
+        }
+        #endif
+    }
+#endif
+    /* Handle based on abort type and EC */
+    switch(type) {
+        case 1: /* Instruction abort */
+            if (ec == 0x20 || ec == 0x21) { /* Check EC for instruction abort */
+                (void)iss; /* Use ISS to avoid warning */
+            }
+            break;
+            
+        case 2: /* Data abort */
+            if (ec == 0x24 || ec == 0x25) { /* Check EC for data abort */
+                (void)iss; /* Use ISS to avoid warning */
+            }
+            break;
+            
+        default:
+            /* Unknown abort type - ISS already logged in crash dump */
+            break;
+    }
+
+    /* If we reach here, it's a fatal error */
+    portDISABLE_INTERRUPTS();
+    for(;;) {
+        /* Infinite loop - system needs reset */
+    }
+}
+
 void vPrintExceptionDetails(ExceptionContext *context) {
 
 // 2. Disable interrupts
