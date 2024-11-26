@@ -1,0 +1,37 @@
+ff_mmcsd.obj: \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/ff_mmcsd.c \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/nortos/FreeRTOS.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/kernel/dpl/DebugP.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/nortos/task.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/nortos/FreeRTOS.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/nortos/semphr.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/nortos/portable.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_headers.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/config/FreeRTOSFATConfig.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/FreeRTOSFATConfigDefaults.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/FreeRTOS_errno_FAT.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_error.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_string.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_ioman.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_fat.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_fatdef.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_memory.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_time.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_crc.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_file.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_dir.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_format.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_locking.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_old_config_defines.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/portable/ff_mmcsd.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/fs/freertos_fat/FreeRTOS-FAT/include/ff_sys.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/mmcsd.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/hw_include/soc_config.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/hw_include/am64x_am243x/soc_config.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/mmcsd/v0/mmcsd.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/kernel/dpl/SystemP.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/kernel/dpl/SemaphoreP.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/kernel/dpl/HwiP.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/hw_include/csl_types.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/hw_include/cslr_mmcsd.h \
+ C:/ti/logfile_json/mcupsdk/mcusdk100020/source/drivers/mmcsd/v0/cslr_mmcsd.h

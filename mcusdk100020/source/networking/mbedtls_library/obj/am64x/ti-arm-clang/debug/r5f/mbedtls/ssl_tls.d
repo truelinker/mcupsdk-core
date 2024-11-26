@@ -1,0 +1,30 @@
+obj/am64x/ti-arm-clang/debug/r5f/mbedtls//ssl_tls.obj: \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\library\ssl_tls.c \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls_ti\alt_config.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\kernel\dpl\DebugP.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\check_config.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\platform.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\platform_time.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\debug.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\ssl.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\bignum.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\ecp.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\ssl_ciphersuites.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\pk.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\md.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\rsa.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\ecdsa.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\cipher.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\x509_crt.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\x509.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\asn1.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\x509_crl.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\dhm.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\ecdh.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\ssl_internal.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\md5.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\sha1.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\sha256.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\sha512.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\platform_util.h \
+  C:\ti\logfile_json\mcupsdk\mcusdk100020\source\networking\mbedtls_library\mbedtls\include\mbedtls\oid.h
