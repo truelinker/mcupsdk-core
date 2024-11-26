@@ -92,7 +92,7 @@ static inline uint64_t get_far_el1(void) {
 }
 
 /* Handler for data and instruction aborts */
-void HwiP_handleAbort(uint64_t esr, uint64_t far, uint64_t elr, uint32_t type) {
+void HwiP_abortHandler_custom(uint64_t esr, uint64_t far, uint64_t elr, uint32_t type) {
     uint32_t ec = (esr >> 26) & 0x3F;    /* Extract Exception Class */
     uint32_t iss = esr & 0x1FFFFFF;       /* Extract Instruction Specific Syndrome */
     
