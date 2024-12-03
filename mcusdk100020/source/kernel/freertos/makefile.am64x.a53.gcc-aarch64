@@ -93,12 +93,20 @@ INCLUDES_common := \
 
 DEFINES_common := \
     -DSOC_AM64X \
+    -DCONFIG_ARM64_ERRATUM_843419=y \
+    -DCONFIG_ARM64_USE_LSE_ATOMICS=y \
+    -DCONFIG_ARM64_HW_AFDBM=y \
 
 CFLAGS_common := \
     -mcpu=cortex-a53+fp+simd \
     -mabi=lp64 \
     -mcmodel=large \
-    -mstrict-align \
+    -O1 \
+    -gdwarf-4 \
+    -fno-omit-frame-pointer \
+    -fno-optimize-sibling-calls \
+    -fno-strict-aliasing \
+    -fno-delete-null-pointer-checks \
     -mfix-cortex-a53-835769 \
     -mfix-cortex-a53-843419 \
     -Wall \
@@ -109,6 +117,10 @@ CFLAGS_common := \
     -Wno-unused-but-set-variable \
     -fdata-sections \
     -ffunction-sections \
+    -funwind-tables \
+    -fasynchronous-unwind-tables \
+    -fexceptions \
+    -fnon-call-exceptions \
     -Wno-unused-function \
     -Wno-maybe-uninitialized \
 

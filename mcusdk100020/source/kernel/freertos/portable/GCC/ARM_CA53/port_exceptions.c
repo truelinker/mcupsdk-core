@@ -1,5 +1,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
+#include <kernel/nortos/dpl/a53/common_armv8.h>  // For Armv8_getCoreId()
 
 /* Structure to access saved context on stack */
 typedef struct {
@@ -21,17 +22,23 @@ typedef struct {
 
 typedef struct {
     uint32_t signature;                    // To verify crash dump is valid
+    uint32_t coreId;                       // Which core had the exception
     uint64_t timestamp;                    // When crash occurred
     uint64_t esr;                         // Exception Syndrome Register
     uint64_t far;                         // Fault Address Register
     uint64_t elr;                         // Exception Link Register
     uint64_t spsr;                        // Saved Program Status Register
     uint64_t sp;                          // Stack Pointer
+    uint64_t currentEL;                    // Current Exception Level
+    uint64_t sctlr;                       // System Control Register
+    uint64_t lr;                          // Link Register (x30)
+    uint64_t daif;                        // Debug/Interrupt Mask Register
     uint64_t regs[31];                    // General purpose registers
 } CrashDump_t;
 
 
 #define SHARED_MEM_BASE    0x701D4000
+#define CRASH_DUMP_SIZE   sizeof(CrashDump_t)
 #define CRASH_SIGNATURE 0xDEADDEAD
 
 
@@ -94,16 +101,40 @@ static inline uint64_t get_far_el1(void) {
 /* Handler for data and instruction aborts */
 void HwiP_abortHandler_custom(uint64_t esr, uint64_t far, uint64_t elr, uint32_t type) {
     uint32_t ec = (esr >> 26) & 0x3F;    /* Extract Exception Class */
-    uint32_t iss = esr & 0x1FFFFFF;       /* Extract Instruction Specific Syndrome */
+    uint32_t iss = esr & 0x1FFFFFF;      /* Extract ISS */
+
+    /* Get additional debug info */
+    uint64_t currentEL, sctlr, lr, daif;
+    __asm__ volatile(
+        "mrs %0, CurrentEL\n\t"    // Get current exception level
+        "mrs %1, sctlr_el1\n\t"    // Get System Control Register
+        "mov %2, x30\n\t"          // Get Link Register
+        "mrs %3, daif\n\t"         // Get DAIF register
+        : "=r"(currentEL), "=r"(sctlr), "=r"(lr), "=r"(daif)
+    );
     
+    /* Get core ID */
+    uint32_t coreId = Armv8_getCoreId();
+
     /* Initialize crash dump structure */
     volatile CrashDump_t *crash_dump = (volatile CrashDump_t *)SHARED_MEM_BASE;
     if (crash_dump != NULL) {
         crash_dump->signature = CRASH_SIGNATURE;
-        crash_dump->timestamp = xTaskGetTickCount();
+        crash_dump->coreId = coreId;  // Save which core had the exception
         crash_dump->esr = esr;
         crash_dump->far = far;
         crash_dump->elr = elr;
+        crash_dump->currentEL = currentEL;
+        crash_dump->sctlr = sctlr;
+        crash_dump->lr = lr;
+        crash_dump->daif = daif;
+
+        /* Print debug info */
+        //DebugP_log("FAR: 0x%016llx\n", far);
+        //DebugP_log("ELR: 0x%016llx\n", elr);
+        //DebugP_log("LR: 0x%016llx\n", lr);
+        //DebugP_log("CurrentEL: 0x%016llx\n", currentEL);
+        //DebugP_log("SCTLR: 0x%016llx\n", sctlr);
         
         /* Get current execution state */
         uint64_t spsr;

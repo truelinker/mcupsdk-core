@@ -69,6 +69,9 @@
 	.extern ullPortYieldRequired
 	.extern HwiP_abortHandler_custom
 
+	/* Export disable_debug_monitoring function */
+	.global disable_debug_monitoring
+
 	.global HwiP_IRQ_Handler
     .global HwiP_SVC_Handler
 	.global vPortRestoreTaskContext
@@ -185,6 +188,11 @@
 	/* Switch to use the EL0 stack pointer. */
 	MSR 	SPSEL, #0
 
+	/* Ensure SP is 16-byte aligned */
+	//mov     x0, sp
+	//and     x0, x0, #0xF
+	//sub     sp, sp, x0
+
 	/* Save the entire context. */
     PUSH_ALL_CPU_REGS SP
 
@@ -232,6 +240,7 @@
 	LDR		X0, pxCurrentTCBConst
 	LDR		X1, [X0]
 	LDR		X0, [X1]
+	//AND		X0, X0, #~0xF
 	MOV		SP, X0
 
 	LDP 	X2, X3, [SP], #0x10  /* Critical nesting and FPU context. */
@@ -292,13 +301,15 @@ HwiP_gicv3Vectors:
 VECTOR_ENTRY el1SyncSP0
     mrs     x0, esr_el1
     lsr     x0, x0, #26         /* Shift EC to bottom bits */
-    cmp     x0, #0x21           /* Check for alignment fault */
-    b.eq    HwiP_alignmentFaultHandler
-    cmp     x0, #0x24           /* Check for data abort */
-    b.eq    HwiP_abortHandler
-    cmp     x0, #0x20           /* Check for instruction abort */
-    b.eq    HwiP_abortHandler
-    b       HwiP_SVC_Handler    /* Default to SVC handler */
+    /* Check if it's an SVC */
+    cmp     x0, #0x15           /* EC = 0x15 for SVC */
+    b.eq    HwiP_SVC_Handler    /* If SVC, go to SVC handler */
+    /* Not SVC, prepare parameters for abort handler */
+    mrs     x0, esr_el1         /* Second parameter - ESR */
+    mrs     x1, far_el1         /* First parameter - FAR */
+    mrs     x2, elr_el1         /* Third parameter - ELR */
+    mrs     x3, spsr_el1        /* Fourth parameter - SPSR */
+    b       HwiP_abortHandler_custom   /* Call abort handler with parameters in x0-x3 */
 
 VECTOR_ENTRY el1IrqSP0
     B HwiP_IRQ_Handler
@@ -326,14 +337,16 @@ VECTOR_ENTRY el1SErrorSP0
  */
 VECTOR_ENTRY el1SyncSPx
     mrs     x0, esr_el1
-    lsr     x0, x0, #26         /* Get exception class (EC) */
-    cmp     x0, #0x21           /* Check for alignment fault */
-    b.eq    HwiP_alignmentFaultHandler
-    cmp     x0, #0x24           /* Check for data abort */
-    b.eq    HwiP_abortHandler
-    cmp     x0, #0x20           /* Check for instruction abort */
-    b.eq    HwiP_abortHandler
-    b       HwiP_SVC_Handler    /* Default to SVC handler */
+    lsr     x0, x0, #26         /* Shift EC to bottom bits */
+    /* Check if it's an SVC */
+    cmp     x0, #0x15           /* EC = 0x15 for SVC */
+    b.eq    HwiP_SVC_Handler    /* If SVC, go to SVC handler */
+    /* Not SVC, prepare parameters for abort handler */
+    mrs     x0, esr_el1         /* Second parameter - ESR */
+    mrs     x1, far_el1         /* First parameter - FAR */
+    mrs     x2, elr_el1         /* Third parameter - ELR */
+    mrs     x3, spsr_el1        /* Fourth parameter - SPSR */
+    b       HwiP_abortHandler_custom   /* Call abort handler with parameters in x0-x3 */
 
 VECTOR_ENTRY el1IrqSPx
     B HwiP_IRQ_Handler
@@ -594,5 +607,30 @@ ullCriticalNestingConst: .dword ullCriticalNesting
 ullPortTaskHasFPUContextConst: .dword ullPortTaskHasFPUContext
 ullPortInterruptNestingConst: .dword ullPortInterruptNesting
 ullPortYieldRequiredConst: .dword ullPortYieldRequired
+
+/* Debug monitoring control function */
+.align 8
+.type disable_debug_monitoring, %function
+disable_debug_monitoring:
+    /* Ensure all previous instructions complete */
+    dsb     sy
+    isb
+
+    /* Disable all debug features */
+    mov     x0, xzr               /* Load zero */
+    msr     mdscr_el1, x0         /* Clear all MDSCR_EL1 bits */
+    msr     mdcr_el2, x0         /* Clear all MDCR_EL2 bits */
+    msr     mdcr_el3, x0         /* Clear all MDCR_EL3 bits */
+
+    /* Set debug mask in DAIF register */
+    mrs     x0, daif             /* Read current DAIF */
+    orr     x0, x0, #0x200      /* Set D bit (bit 9) */
+    msr     daif, x0            /* Write back to DAIF */
+
+    /* Ensure changes take effect */
+    dsb     sy
+    isb
+
+    ret
 
 .end
